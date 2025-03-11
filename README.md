@@ -1,6 +1,6 @@
 # Solar System Visualization
 
-This project is a 3D visualization of the solar system using React and Three.js. It displays the Sun and the planets orbiting around it with their respective names, distances, radii, and speeds of revolution. This was created entirely using Copilot prompts.
+This project is a 3D visualization of the solar system using React and Three.js. It displays the Sun and the planets orbiting around it with their respective names, distances, radii, and speed of revolution. This was created entirely using Copilot prompts.
 
 ## Features
 
