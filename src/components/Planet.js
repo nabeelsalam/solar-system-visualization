@@ -14,6 +14,7 @@ function Planet({
   radius,
   speed,
   speedScale,
+  onClick,
 }) {
   const planetRef = useRef();
   const textRef = useRef();
@@ -80,7 +81,11 @@ function Planet({
   return (
     <>
       <Line points={points} color="gray" lineWidth={2} />
-      <Sphere ref={planetRef} args={[radius, 32, 32]}>
+      <Sphere
+        ref={planetRef}
+        args={[radius, 32, 32]}
+        onClick={() => onClick(planetRef)}
+      >
         <meshStandardMaterial attach="material" color={color} />
       </Sphere>
       <Text
