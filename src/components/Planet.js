@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Sphere, Text, Line } from "@react-three/drei";
 import * as THREE from "three";
+import Ring from "./Ring";
 
 function Planet({
   name,
@@ -15,6 +16,7 @@ function Planet({
   speed,
   speedScale,
   onClick,
+  rings,
 }) {
   const planetRef = useRef();
   const textRef = useRef();
@@ -81,13 +83,19 @@ function Planet({
   return (
     <>
       <Line points={points} color="gray" lineWidth={2} />
-      <Sphere
-        ref={planetRef}
-        args={[radius, 32, 32]}
-        onClick={() => onClick(planetRef)}
-      >
-        <meshStandardMaterial attach="material" color={color} />
-      </Sphere>
+      <group ref={planetRef}>
+        <Sphere args={[radius, 32, 32]} onClick={() => onClick(planetRef)}>
+          <meshStandardMaterial attach="material" color={color} />
+        </Sphere>
+        {rings && (
+          <Ring
+            innerRadius={radius * 1.2}
+            outerRadius={radius * 2.3}
+            color={rings.color}
+            inclination={rings.inclination || 0}
+          />
+        )}
+      </group>
       <Text
         ref={textRef}
         fontSize={0.5}

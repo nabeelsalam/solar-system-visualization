@@ -167,6 +167,11 @@ function Scene({
         speed={0.0009}
         speedScale={speedScale}
         onClick={moveToPlanet}
+        rings={{
+          color: "#A68A5B",
+          inclination: 26.7, // Saturn's rings tilted 26.7° to its orbital plane
+          opacity: 0.8,
+        }}
       />
       <Planet
         name="Uranus"
@@ -180,6 +185,11 @@ function Scene({
         speed={0.0004}
         speedScale={speedScale}
         onClick={moveToPlanet}
+        rings={{
+          color: "#87CEEB",
+          inclination: 97.77, // Uranus's rings tilted 97.77° to its orbital plane
+          opacity: 0.2,
+        }}
       />
       <Planet
         name="Neptune"
@@ -193,6 +203,11 @@ function Scene({
         speed={0.0002}
         speedScale={speedScale}
         onClick={moveToPlanet}
+        rings={{
+          color: "#4169E1",
+          inclination: 29.56, // Neptune's rings tilted 29.56° to its orbital plane
+          opacity: 0.15,
+        }}
       />
       <OrbitControls ref={orbitControlsRef} />
     </>
