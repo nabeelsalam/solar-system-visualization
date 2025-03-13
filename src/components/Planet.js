@@ -3,29 +3,78 @@ import { useFrame } from "@react-three/fiber";
 import { Sphere, Text, Line } from "@react-three/drei";
 import * as THREE from "three";
 
-function Planet({ name, color, distance, radius, speed }) {
+function Planet({
+  name,
+  color,
+  semiMajorAxis,
+  eccentricity,
+  inclination,
+  longitudeOfAscendingNode,
+  argumentOfPeriapsis,
+  radius,
+  speed,
+  speedScale,
+}) {
   const planetRef = useRef();
   const textRef = useRef();
   const angleRef = useRef(0);
 
   useFrame(() => {
-    angleRef.current += speed;
-    const x = distance * Math.cos(angleRef.current);
-    const z = distance * Math.sin(angleRef.current);
-    planetRef.current.position.set(x, 0, z);
-    textRef.current.position.set(x, radius + 0.5, z);
+    angleRef.current += speed * speedScale;
+    const a = semiMajorAxis; // semi-major axis
+    const b = a * Math.sqrt(1 - eccentricity ** 2); // semi-minor axis
+    const x = a * Math.cos(angleRef.current);
+    const z = b * Math.sin(angleRef.current);
+
+    // Apply orbital inclination and orientation
+    const cosΩ = Math.cos(THREE.MathUtils.degToRad(longitudeOfAscendingNode));
+    const sinΩ = Math.sin(THREE.MathUtils.degToRad(longitudeOfAscendingNode));
+    const cosi = Math.cos(THREE.MathUtils.degToRad(inclination));
+    const sini = Math.sin(THREE.MathUtils.degToRad(inclination));
+    const cosω = Math.cos(THREE.MathUtils.degToRad(argumentOfPeriapsis));
+    const sinω = Math.sin(THREE.MathUtils.degToRad(argumentOfPeriapsis));
+
+    const X =
+      (cosΩ * cosω - sinΩ * sinω * cosi) * x +
+      (-cosΩ * sinω - sinΩ * cosω * cosi) * z;
+    const Y =
+      (sinΩ * cosω + cosΩ * sinω * cosi) * x +
+      (-sinΩ * sinω + cosΩ * cosω * cosi) * z;
+    const Z = sini * sinω * x + sini * cosω * z;
+
+    if (planetRef.current) {
+      planetRef.current.position.set(X, Z, Y);
+    }
+    if (textRef.current) {
+      textRef.current.position.set(X, Z + radius + 0.5, Y);
+    }
   });
 
   const points = [];
   for (let i = 0; i <= 64; i++) {
     const angle = (i / 64) * Math.PI * 2;
-    points.push(
-      new THREE.Vector3(
-        Math.cos(angle) * distance,
-        0,
-        Math.sin(angle) * distance
-      )
-    );
+    const a = semiMajorAxis; // semi-major axis
+    const b = a * Math.sqrt(1 - eccentricity ** 2); // semi-minor axis
+    const x = Math.cos(angle) * a;
+    const z = Math.sin(angle) * b;
+
+    // Apply orbital inclination and orientation
+    const cosΩ = Math.cos(THREE.MathUtils.degToRad(longitudeOfAscendingNode));
+    const sinΩ = Math.sin(THREE.MathUtils.degToRad(longitudeOfAscendingNode));
+    const cosi = Math.cos(THREE.MathUtils.degToRad(inclination));
+    const sini = Math.sin(THREE.MathUtils.degToRad(inclination));
+    const cosω = Math.cos(THREE.MathUtils.degToRad(argumentOfPeriapsis));
+    const sinω = Math.sin(THREE.MathUtils.degToRad(argumentOfPeriapsis));
+
+    const X =
+      (cosΩ * cosω - sinΩ * sinω * cosi) * x +
+      (-cosΩ * sinω - sinΩ * cosω * cosi) * z;
+    const Y =
+      (sinΩ * cosω + cosΩ * sinω * cosi) * x +
+      (-sinΩ * sinω + cosΩ * cosω * cosi) * z;
+    const Z = sini * sinω * x + sini * cosω * z;
+
+    points.push(new THREE.Vector3(X, Z, Y));
   }
 
   return (
